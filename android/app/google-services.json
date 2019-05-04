@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "363333351636",
+    "firebase_url": "https://voteio-7530e.firebaseio.com",
+    "project_id": "voteio-7530e",
+    "storage_bucket": "voteio-7530e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:363333351636:android:9c3e8b0c1b74ac6b",
+        "android_client_info": {
+          "package_name": "io.vote.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "363333351636-ihshqpg3bsir0v4j96oiat38nd1d859h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPjh7_f08BT_Gd0cQnWfwTzY4Zrm_7zng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "363333351636-ihshqpg3bsir0v4j96oiat38nd1d859h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "363333351636-6pnu7r9fdem0eu4hnttkqe9cl62nip02.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.vote.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
