@@ -9,7 +9,10 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.white,
         actions: <Widget>[
           GestureDetector(
-            onTap: () => Navigator.pushNamed(context, '/profile'),
+            onTap: () {
+              print('Hello');
+              Navigator.pushNamed(context, '/scanner');
+            },
             child: Icon(
               Icons.person,
               color: Colors.black54,

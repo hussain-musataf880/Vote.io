@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../services/auth_services.dart';
-import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -15,6 +14,13 @@ class _LoginPageState extends State<LoginPage> {
 
   String _email;
   String _password;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    AuthServices.instance
+        .getUser(() => Navigator.pushNamed(context, '/home'), (e) => print(e));
+  }
 
   @override
   Widget build(BuildContext context) {
