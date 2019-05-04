@@ -13,7 +13,7 @@ class VoteIO extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/home': (BuildContext context) => new HomePage(),
         '/login': (BuildContext context) => new LoginPage(),
-        '/login': (BuildContext context) => new LoginPage(),
+        '/profile': (BuildContext context) => new LoginPage(),
       },
     );
   }
