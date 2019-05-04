@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../services/auth_services.dart';
+import 'home_page.dart';
+
 class LoginPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -9,6 +12,9 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+
+  String _email;
+  String _password;
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +75,9 @@ class _LoginPageState extends State<LoginPage> {
     return SizedBox(
       width: width - 80,
       child: TextFormField(
+        validator: (input) =>
+            input.contains('@') ? null : 'Enter a valid email address',
+        onSaved: (input) => _email = input,
         decoration: InputDecoration(
           suffixIcon: Icon(Icons.person),
           labelText: 'Email Address',
@@ -81,6 +90,9 @@ class _LoginPageState extends State<LoginPage> {
     return SizedBox(
       width: width - 80,
       child: TextFormField(
+        validator: (input) => input.length > 1 ? null : 'Enter a password',
+        onSaved: (input) => _password = input,
+        obscureText: true,
         decoration: InputDecoration(
           suffixIcon: Icon(Icons.lock),
           labelText: 'Password',
@@ -99,12 +111,28 @@ class _LoginPageState extends State<LoginPage> {
           textColor: Colors.white,
           color: Color.fromRGBO(75, 105, 255, 1),
           child: Text("Login"),
-          onPressed: () {},
+          onPressed: () => _authenticate(),
           shape: new RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(20),
           ),
         ),
       ),
     );
+  }
+
+  void _authenticate() async {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      AuthServices.instance.login(
+          email: _email,
+          password: _password,
+          onSuccess: () {
+            //DBServices.instance.getUserData();
+            Navigator.pushNamed(context, '/home');
+          },
+          onError: (e) {
+            print(e);
+          });
+    }
   }
 }
