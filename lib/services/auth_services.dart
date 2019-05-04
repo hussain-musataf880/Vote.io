@@ -12,4 +12,15 @@ class AuthServices {
         .then(onSuccess())
         .catchError((error) => onError);
   }
+
+  void getUser(Function success, Function failure) async {
+    try {
+      FirebaseUser _user = await _auth.currentUser();
+      if (_user != null) {
+        success();
+      }
+    } catch (e) {
+      failure(e);
+    }
+  }
 }
