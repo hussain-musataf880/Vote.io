@@ -4,6 +4,7 @@ import 'package:local_auth/local_auth.dart';
 
 import '../widgets/loading_indicators.dart';
 import '../widgets/nominee_tab.dart';
+import "package:geolocator/geolocator.dart";
 
 class ScannerPage extends StatefulWidget {
   String name;
@@ -82,6 +83,17 @@ class _ScannerPageState extends State<ScannerPage> {
   }
 
   void registerVote() async {
+    Geolocator geol = Geolocator();
+
+
+
+    Position userLocation = await geol.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
+
+    print(userLocation);
+
+
+
     bool didAuthenticate = await _auth.authenticateWithBiometrics(
         localizedReason: 'Register Vote?');
   }
