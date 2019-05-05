@@ -5,6 +5,8 @@ class AuthServices {
 
   FirebaseAuth _auth = FirebaseAuth.instance;
 
+  FirebaseUser user;
+
   void login(
       {String email, String password, Function onSuccess, Function onError}) {
     _auth
@@ -17,6 +19,7 @@ class AuthServices {
     try {
       FirebaseUser _user = await _auth.currentUser();
       if (_user != null) {
+        user = _user;
         success();
       }
     } catch (e) {

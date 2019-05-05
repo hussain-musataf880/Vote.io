@@ -6,6 +6,14 @@ import '../widgets/loading_indicators.dart';
 import '../widgets/nominee_tab.dart';
 
 class ScannerPage extends StatefulWidget {
+  String name;
+  String description;
+  String eid;
+  String image;
+  String pid;
+
+  ScannerPage({this.name, this.image, this.description, this.eid, this.pid});
+
   @override
   State<StatefulWidget> createState() {
     return _ScannerPageState();
@@ -49,19 +57,20 @@ class _ScannerPageState extends State<ScannerPage> {
             children: <Widget>[
               scannerView(_isScanSuccess, 300, 300),
               Divider(
-                height: 50,
+                height: 70,
                 color: Colors.transparent,
               ),
               voteButton(_isScanSuccess, 300, registerVote),
               Divider(
-                height: 100,
+                height: 80,
                 color: Colors.transparent,
               ),
-              NomineeTab(
-                name: 'Barack Obama',
-                description: 'Vote for me not trump',
-                voteCount: '20012',
-              ),
+              Text('Selected Candidate',style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),),
+              ListTile(
+                title: Text(this.widget.name),
+                subtitle: Text(this.widget.description),
+                leading: Image(image: NetworkImage(this.widget.image)),
+              )
             ]),
       ),
     );
@@ -91,6 +100,7 @@ class _ScannerPageState extends State<ScannerPage> {
       setState(() {
         _isScanSuccess = true;
         _scanValue = value.toString();
+        print(_scanValue);
       });
       new Future.delayed(const Duration(seconds: 2), controller.startScanning);
     });

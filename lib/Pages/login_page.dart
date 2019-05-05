@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:voteio/services/db_services.dart';
 
 import '../services/auth_services.dart';
+import '../services/db_services.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -18,8 +20,9 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     // TODO: implement initState
-    AuthServices.instance
-        .getUser(() => Navigator.pushNamed(context, '/home'), (e) => print(e));
+    AuthServices.instance.getUser(
+        () => Navigator.pushReplacementNamed(context, '/home'),
+        (e) => print(e));
   }
 
   @override
@@ -132,9 +135,11 @@ class _LoginPageState extends State<LoginPage> {
       AuthServices.instance.login(
           email: _email,
           password: _password,
-          onSuccess: () {
-            //DBServices.instance.getUserData();
-            Navigator.pushNamed(context, '/home');
+          onSuccess: () async {
+            AuthServices.instance.getUser(() async {
+              await DBServices.instance.getUserData();
+              Navigator.pushReplacementNamed(context, '/home');
+            }, (e) => {print(e)});
           },
           onError: (e) {
             print(e);

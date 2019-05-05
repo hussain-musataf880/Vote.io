@@ -15,7 +15,6 @@ class VoteIO extends StatelessWidget {
         '/home': (BuildContext context) => new HomePage(),
         '/login': (BuildContext context) => new LoginPage(),
         '/profile': (BuildContext context) => new LoginPage(),
-        '/scanner': (BuildContext context) => new ScannerPage(),
       },
     );
   }

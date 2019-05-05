@@ -1,33 +1,77 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
+import 'package:voteio/services/db_services.dart';
+import 'package:voteio/widgets/loading_indicators.dart';
 
-class HomePage extends StatelessWidget {
+import '../pages/options_page.dart';
+
+import '../widgets/poll_card.dart';
+
+class HomePage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _HomePageState();
+  }
+}
+
+class _HomePageState extends State<HomePage> {
+  final PageController controller = PageController(viewportFraction: 0.8);
+
+  Stream pages;
+
+  int currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    pages = DBServices.instance.getPolls();
+
+    controller.addListener(() {
+      int nextPage = controller.page.round();
+
+      if (nextPage != currentPage) {
+        setState(() {
+          currentPage = nextPage;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        actions: <Widget>[
-          GestureDetector(
-            onTap: () {
-              print('Hello');
-              Navigator.pushNamed(context, '/scanner');
-            },
-            child: Icon(
-              Icons.person,
-              color: Colors.black54,
-              size: 28,
-            ),
-          )
-        ],
+        backgroundColor: Color.fromRGBO(75, 105, 255, 1),
         title: Text(
           'Vote.io',
-          style: TextStyle(
-              fontSize: 30,
-              color: Color.fromRGBO(75, 105, 255, 1),
-              fontWeight: FontWeight.w600),
+          style: TextStyle(color: Colors.white),
         ),
       ),
+      body: StreamBuilder(
+          stream: pages,
+          initialData: [],
+          builder: (context, AsyncSnapshot snap) {
+            List pageList = snap.data.toList();
+            return (pageList.length != 0)
+                ? PageView.builder(
+                    controller: controller,
+                    itemCount: pageList.length,
+                    itemBuilder: (context, int currentIndex) {
+                      bool isPageActive = currentPage == currentIndex;
+                      return PollCard(pageList[currentIndex], isPageActive, () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OptionsPage(
+                                  options: pageList[currentIndex]['options'],
+                                  pid: pageList[currentIndex]['id'],
+                                ),
+                          ),
+                        );
+                      });
+                    },
+                  )
+                : BounceLoadingIndicator();
+          }),
     );
   }
 }
