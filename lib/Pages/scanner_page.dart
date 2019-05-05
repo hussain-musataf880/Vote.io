@@ -83,17 +83,7 @@ class _ScannerPageState extends State<ScannerPage> {
   }
 
   void registerVote() async {
-    Geolocator geol = Geolocator();
-
-
-
-    Position userLocation = await geol.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best);
-
-    print(userLocation);
-
-
-
+    
     bool didAuthenticate = await _auth.authenticateWithBiometrics(
         localizedReason: 'Register Vote?');
   }
