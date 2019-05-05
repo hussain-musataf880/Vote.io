@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fast_qr_reader_view/fast_qr_reader_view.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:voteio/services/db_services.dart';
 
 import '../widgets/loading_indicators.dart';
-import '../widgets/nominee_tab.dart';
-import "package:geolocator/geolocator.dart";
 
 class ScannerPage extends StatefulWidget {
   String name;
@@ -29,6 +28,8 @@ class _ScannerPageState extends State<ScannerPage> {
   List<BiometricType> availableBiometrics;
 
   bool isBiometricDevice;
+
+  String qrcode = '';
 
   bool _isScanSuccess = false;
   String _scanValue;
@@ -61,12 +62,15 @@ class _ScannerPageState extends State<ScannerPage> {
                 height: 70,
                 color: Colors.transparent,
               ),
-              voteButton(_isScanSuccess, 300, registerVote),
+              voteButton(_isScanSuccess, 300, context),
               Divider(
                 height: 80,
                 color: Colors.transparent,
               ),
-              Text('Selected Candidate',style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),),
+              Text(
+                'Selected Candidate',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+              ),
               ListTile(
                 title: Text(this.widget.name),
                 subtitle: Text(this.widget.description),
@@ -82,20 +86,35 @@ class _ScannerPageState extends State<ScannerPage> {
     super.dispose();
   }
 
-  void registerVote() async {
-    Geolocator geol = Geolocator();
-
-
-
-    Position userLocation = await geol.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best);
-
-    print(userLocation);
-
-
-
+  void registerVote(BuildContext context) async {
     bool didAuthenticate = await _auth.authenticateWithBiometrics(
         localizedReason: 'Register Vote?');
+    if (didAuthenticate && qrcode.length != 0) {
+      bool isCorrectCode =
+          DBServices.instance.verifyQrCode(this.widget.pid, qrcode);
+      if (isCorrectCode) {
+        DBServices.instance
+            .postVote(eid: this.widget.eid, pollID: this.widget.pid)
+            .then((wasSuccess) {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  content: Text('Vote Registered'),
+                  actions: <Widget>[
+                    FloatingActionButton(
+                      backgroundColor: Color.fromRGBO(75, 105, 255, 1),
+                      child: Icon(Icons.done),
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(context, '/home');
+                      },
+                    ),
+                  ],
+                );
+              });
+        });
+      }
+    }
   }
 
   void initiBiometrics() async {
@@ -129,12 +148,12 @@ class _ScannerPageState extends State<ScannerPage> {
     return await availableCameras();
   }
 
-  Widget voteButton(bool isScanSuccess, double width, Function registerVote) {
+  Widget voteButton(bool isScanSuccess, double width, BuildContext context) {
     return MaterialButton(
       height: 50,
       minWidth: width,
       elevation: 8,
-      onPressed: () => registerVote(),
+      onPressed: () => registerVote(context),
       color: isScanSuccess
           ? Color.fromRGBO(0, 214, 99, 1)
           : Color.fromRGBO(75, 105, 255, 1),
